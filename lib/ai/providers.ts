@@ -14,7 +14,7 @@ import {
   reasoningModel,
   titleModel,
 } from "./models.test";
-import { ragMiddleware } from "./middleware";
+import { ragMiddleware, usageMiddleware } from "./middleware";
 
 export const myProvider = isTestEnvironment
   ? customProvider({
@@ -37,7 +37,7 @@ export const myProvider = isTestEnvironment
         "artifact-model": xai("grok-2-1212"),
         "pulse-model": wrapLanguageModel({
           model: openai("gpt-4-turbo"),
-          middleware: [],
+          middleware: [ragMiddleware, usageMiddleware],
         }),
       },
       imageModels: {

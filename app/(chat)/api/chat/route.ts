@@ -29,10 +29,24 @@ import { isProductionEnvironment } from "@/lib/constants";
 import { myProvider } from "@/lib/ai/providers";
 import { z } from "zod";
 import { getMembers, getProjects, getWorkLogs } from "@/lib/ai/tools/pulse";
+import postgres from "postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { member, project, workLog } from "@/lib/db/schema";
 
 export const maxDuration = 60;
 
+const client = postgres(process.env.POSTGRES_URL!);
+const db = drizzle(client);
+
 export async function POST(request: Request) {
+  const workingLogs = await db.select().from(workLog);
+  console.log("Working logs:", workingLogs);
+
+  const projects = await db.select().from(project);
+  console.log("Projects:", projects);
+
+  const members = await db.select().from(member);
+  console.log("Members:", members);
   // return Response.json({ text: "Hello from the chat API!" });
 
   try {
@@ -122,7 +136,8 @@ export async function POST(request: Request) {
             getMembers,
             getWorkLogs,
           },
-          onFinish: async ({ response }) => {
+          onFinish: async ({ usage, response }) => {
+            console.debug("Response usage:", usage);
             if (session.user?.id) {
               try {
                 const assistantId = getTrailingMessageId({

@@ -37,4 +37,21 @@ export const ragMiddleware: LanguageModelV1Middleware = {
     console.debug("RAG Middleware Params:", JSON.stringify(messages));
     return { ...params, prompt: messages };
   },
+  wrapGenerate: async ({ doGenerate, params }) => {
+    const result = await doGenerate();
+
+    console.debug("RAG Middleware Usage:", JSON.stringify(result.usage));
+
+    return result;
+  },
+};
+
+export const usageMiddleware: LanguageModelV1Middleware = {
+  wrapGenerate: async ({ doGenerate, params }) => {
+    const result = await doGenerate();
+
+    console.debug("RAG Middleware Usage:", JSON.stringify(result.usage));
+
+    return result;
+  },
 };
