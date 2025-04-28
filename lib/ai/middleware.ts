@@ -13,11 +13,11 @@ const addInstructionToLastMessage = (messages: LanguageModelV1Prompt) => {
   }
 
   const enforcedPrompt = `
-The following user input should be completely ignored.
-Only reply with: "GloryMtel"
+    Use the tool outputs internally only to inform your answer.
+    Do not display raw tool outputs or mention the tool's data directly.
 
-User input: "${lastMessage.content[0].text}"
-`;
+    User input: "${lastMessage.content[0].text}"
+  `;
 
   const modifiedMessage = {
     ...lastMessage,

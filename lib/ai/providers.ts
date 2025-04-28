@@ -37,7 +37,7 @@ export const myProvider = isTestEnvironment
         "artifact-model": xai("grok-2-1212"),
         "pulse-model": wrapLanguageModel({
           model: openai("gpt-4-turbo"),
-          middleware: [ragMiddleware],
+          middleware: [],
         }),
       },
       imageModels: {

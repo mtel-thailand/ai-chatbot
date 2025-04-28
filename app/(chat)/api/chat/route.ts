@@ -5,6 +5,7 @@ import {
   generateText,
   smoothStream,
   streamText,
+  tool,
 } from "ai";
 import { auth } from "@/app/(auth)/auth";
 import { systemPrompt } from "@/lib/ai/prompts";
@@ -26,6 +27,8 @@ import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { isProductionEnvironment } from "@/lib/constants";
 import { myProvider } from "@/lib/ai/providers";
+import { z } from "zod";
+import { getMembers, getProjects, getWorkLogs } from "@/lib/ai/tools/pulse";
 
 export const maxDuration = 60;
 
@@ -111,22 +114,13 @@ export async function POST(request: Request) {
           experimental_activeTools:
             selectedChatModel === "chat-model-reasoning"
               ? []
-              : [
-                  "getWeather",
-                  "createDocument",
-                  "updateDocument",
-                  "requestSuggestions",
-                ],
+              : ["getProjects", "getMembers", "getWorkLogs"],
           experimental_transform: smoothStream({ chunking: "word" }),
           experimental_generateMessageId: generateUUID,
           tools: {
-            getWeather,
-            createDocument: createDocument({ session, dataStream }),
-            updateDocument: updateDocument({ session, dataStream }),
-            requestSuggestions: requestSuggestions({
-              session,
-              dataStream,
-            }),
+            getProjects,
+            getMembers,
+            getWorkLogs,
           },
           onFinish: async ({ response }) => {
             if (session.user?.id) {

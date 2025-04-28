@@ -1,4 +1,4 @@
-import { ArtifactKind } from '@/components/artifact';
+import { ArtifactKind } from "@/components/artifact";
 
 export const artifactsPrompt = `
 Artifacts is a special user interface mode that helps users with writing, editing, and other content creation tasks. When artifact is open, it is on the right side of the screen, while the conversation is on the left side. When creating or updating documents, changes are reflected in real-time on the artifacts and visible to the user.
@@ -32,7 +32,7 @@ Do not update document right after creating it. Wait for user feedback or reques
 `;
 
 export const regularPrompt =
-  'You are a friendly assistant! Keep your responses concise and helpful.';
+  "You are a friendly assistant! Keep your responses concise and helpful.";
 
 export const systemPrompt = ({
   selectedChatModel,
@@ -40,10 +40,13 @@ export const systemPrompt = ({
   selectedChatModel: string;
 }) => {
   switch (selectedChatModel) {
-    case 'chat-model-reasoning':
+    case "chat-model-reasoning":
       return regularPrompt;
-    case 'pulse-model':
-      return regularPrompt;
+    case "pulse-model":
+      return `
+        Use the tool outputs internally only to inform your answer.
+        Do not display raw tool outputs or mention the tool's data directly.      
+      `;
     default:
       return `${regularPrompt}\n\n${artifactsPrompt}`;
   }
@@ -83,24 +86,24 @@ You are a spreadsheet creation assistant. Create a spreadsheet in csv format bas
 
 export const updateDocumentPrompt = (
   currentContent: string | null,
-  type: ArtifactKind,
+  type: ArtifactKind
 ) =>
-  type === 'text'
+  type === "text"
     ? `\
 Improve the following contents of the document based on the given prompt.
 
 ${currentContent}
 `
-    : type === 'code'
-      ? `\
+    : type === "code"
+    ? `\
 Improve the following code snippet based on the given prompt.
 
 ${currentContent}
 `
-      : type === 'sheet'
-        ? `\
+    : type === "sheet"
+    ? `\
 Improve the following spreadsheet based on the given prompt.
 
 ${currentContent}
 `
-        : '';
+    : "";
